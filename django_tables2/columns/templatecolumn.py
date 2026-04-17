@@ -126,5 +126,4 @@ class TemplateColumn(Column):
         By default this is the rendered template with `django.utils.html.strip_tags` applied.
         Leading and trailing whitespace is stripped.
         """
-        html = super().value(**kwargs)
-        return strip_tags(html).strip() if isinstance(html, str) else html
+        pass

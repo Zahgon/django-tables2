@@ -107,7 +107,7 @@ class LazyPaginator(Paginator):
     count = property(_get_count)
 
     def _get_num_pages(self):
-        return self._num_pages
+        pass
 
     num_pages = property(_get_num_pages)
 

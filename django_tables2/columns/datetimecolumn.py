@@ -27,10 +27,7 @@ class DateTimeColumn(TemplateColumn):
 
     @classmethod
     def from_field(cls, field, **kwargs):
-        if isinstance(field, models.DateTimeField):
-            return cls(**kwargs)
+        pass
 
     def value(self, value, **kwargs):
-        if isinstance(value, datetime):
-            return value.isoformat(sep=" ")
-        return super().value(value=value, **kwargs)
+        pass

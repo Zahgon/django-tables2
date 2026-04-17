@@ -30,38 +30,28 @@ class TableData:
 
         Good place to do additional checks if Table and TableData instance will work together properly.
         """
-        self.table = table
+        pass
 
     @property
     def model(self):
-        return getattr(self.data, "model", None)
+        pass
 
     @property
     def ordering(self):
-        return None
+        pass
 
     @property
     def verbose_name(self):
-        return "item"
+        pass
 
     @property
     def verbose_name_plural(self):
-        return "items"
+        pass
 
     @staticmethod
     def from_data(data):
         # allow explicit child classes of TableData to be passed to Table()
-        if isinstance(data, TableData):
-            return data
-        if TableQuerysetData.validate(data):
-            return TableQuerysetData(data)
-        elif TableListData.validate(data):
-            return TableListData(list(data))
-
-        raise ValueError(
-            "data must be QuerySet-like (have count() and order_by()) or support"
-            f" list(data) -- {type(data).__name__} has neither"
-        )
+        pass
 
 
 class TableListData(TableData):
@@ -82,20 +72,18 @@ class TableListData(TableData):
     @staticmethod
     def validate(data):
         """Validate `data` for use in this container."""
-        return hasattr(data, "__iter__") or (
-            hasattr(data, "__len__") and hasattr(data, "__getitem__")
-        )
+        pass
 
     def __len__(self):
         return len(self.data)
 
     @property
     def verbose_name(self):
-        return getattr(self.data, "verbose_name", super().verbose_name)
+        pass
 
     @property
     def verbose_name_plural(self):
-        return getattr(self.data, "verbose_name_plural", super().verbose_name_plural)
+        pass
 
     def order_by(self, aliases):
         """
@@ -127,12 +115,7 @@ class TableQuerysetData(TableData):
     @staticmethod
     def validate(data):
         """Validate `data` for use in this container."""
-        return (
-            hasattr(data, "count")
-            and callable(data.count)
-            and hasattr(data, "order_by")
-            and callable(data.order_by)
-        )
+        pass
 
     def __len__(self):
         """Length of the data (cached)."""
@@ -147,15 +130,7 @@ class TableQuerysetData(TableData):
         return self._length
 
     def set_table(self, table):
-        super().set_table(table)
-        if (
-            self.model
-            and getattr(table._meta, "model", None)
-            and not issubclass(self.model, table._meta.model)
-        ):
-            warnings.warn(
-                f"Table data is of type {self.model} but {table._meta.model} is specified in Table.Meta.model"
-            )
+        pass
 
     @property
     def ordering(self):
@@ -168,13 +143,7 @@ class TableQuerysetData(TableData):
         This works by inspecting the actual underlying data. As such it's only
         supported for querysets.
         """
-        aliases = {}
-        for bound_column in self.table.columns:
-            aliases[bound_column.order_by_alias] = bound_column.order_by
-        try:
-            return next(segment(self.data.query.order_by, aliases))
-        except StopIteration:
-            pass
+        pass
 
     def order_by(self, aliases):
         """
@@ -220,7 +189,7 @@ class TableQuerysetData(TableData):
 
         Model's `~django.db.Model.Meta.verbose_name` is honored.
         """
-        return self.data.model._meta.verbose_name
+        pass
 
     @cached_property
     def verbose_name_plural(self):
@@ -229,4 +198,4 @@ class TableQuerysetData(TableData):
 
         Model's `~django.db.Model.Meta.verbose_name` is honored.
         """
-        return self.data.model._meta.verbose_name_plural
+        pass

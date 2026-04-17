@@ -39,11 +39,7 @@ class FileColumn(BaseLinkColumn):
         super().__init__(**kwargs)
 
     def get_url(self, value, record):
-        storage = getattr(value, "storage", None)
-        if not storage:
-            return None
-
-        return storage.url(value.name)
+        pass
 
     def text_value(self, record, value):
         if self.text is None:
@@ -81,5 +77,4 @@ class FileColumn(BaseLinkColumn):
 
     @classmethod
     def from_field(cls, field, **kwargs):
-        if isinstance(field, models.FileField):
-            return cls(**kwargs)
+        pass

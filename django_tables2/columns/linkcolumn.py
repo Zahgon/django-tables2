@@ -26,7 +26,7 @@ class BaseLinkColumn(Column):
 
     def value(self, record, value):
         """Return the content for a specific cell similarly to `.render` without any HTML content."""
-        return self.text_value(record, value)
+        pass
 
     def render(self, record, value):
         return self.text_value(record, value)

@@ -52,11 +52,7 @@ class CheckBoxColumn(Column):
 
     @property
     def header(self):
-        default = {"type": "checkbox"}
-        general = self.attrs.get("input")
-        specific = self.attrs.get("th__input")
-        attrs = AttributeDict(default, **(specific or general or {}))
-        return mark_safe(f"<input {attrs.as_html()} />")
+        pass
 
     def render(self, value, bound_column, record):
         default = {"type": "checkbox", "name": bound_column.name, "value": value}

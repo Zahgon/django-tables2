@@ -90,7 +90,7 @@ class BoundRow:
     @property
     def table(self):
         """The `.Table` this row is part of."""
-        return self._table
+        pass
 
     def get_even_odd_css_class(self):
         """
@@ -120,7 +120,7 @@ class BoundRow:
     @property
     def record(self):
         """The data record from the data source which is used to populate this row with data."""
-        return self._record
+        pass
 
     def __iter__(self):
         """
@@ -172,14 +172,7 @@ class BoundRow:
 
     def _optional_cell_arguments(self, bound_column, value):
         """Arguments that will optionally be passed while rendering cells."""
-        return {
-            "value": value,
-            "record": self.record,
-            "column": bound_column.column,
-            "bound_column": bound_column,
-            "bound_row": self,
-            "table": self._table,
-        }
+        pass
 
     def get_cell(self, name):
         """Return the final rendered html for a cell in the row, given the name of a column."""
@@ -191,22 +184,15 @@ class BoundRow:
 
     def _call_render(self, bound_column, value=None):
         """Call the column's render method with appropriate kwargs."""
-        render_kwargs = self._optional_cell_arguments(bound_column, value)
-        content = call_with_appropriate(bound_column.render, render_kwargs)
-
-        return bound_column.link(content, **render_kwargs) if bound_column.link else content
+        pass
 
     def get_cell_value(self, name):
         """Return the final rendered value (excluding any html) for a cell in the row, given the name of a column."""
-        return self._get_and_render_with(
-            self.table.columns[name], render_func=self._call_value, default=None
-        )
+        pass
 
     def _call_value(self, bound_column, value=None):
         """Call the column's value method with appropriate kwargs."""
-        return call_with_appropriate(
-            bound_column.value, self._optional_cell_arguments(bound_column, value)
-        )
+        pass
 
     def __contains__(self, item):
         """Check by both row object and column name."""
@@ -283,12 +269,7 @@ class BoundRows:
         Yields:
             BoundPinnedRow: Top or bottom `BoundPinnedRow` object for single pinned record.
         """
-        if data is not None:
-            if hasattr(data, "__iter__") is False:
-                raise ValueError("The data for pinned rows must be iterable")
-
-            for pinned_record in data:
-                yield BoundPinnedRow(pinned_record, table=self.table)
+        pass
 
     def __iter__(self):
         # Top pinned rows

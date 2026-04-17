@@ -53,35 +53,20 @@ class TableExport:
 
     def table_to_dataset(self, table, exclude_columns, dataset_kwargs=None):
         """Transform a table to a tablib dataset."""
-
-        def default_dataset_title():
-            try:
-                return table.Meta.model._meta.verbose_name_plural.title()
-            except AttributeError:
-                return "Export Data"
-
-        kwargs = {"title": default_dataset_title()}
-        kwargs.update(dataset_kwargs or {})
-        dataset = Dataset(**kwargs)
-        for i, row in enumerate(table.as_values(exclude_columns=exclude_columns)):
-            if i == 0:
-                dataset.headers = row
-            else:
-                dataset.append(row)
-        return dataset
+        pass
 
     @classmethod
     def is_valid_format(self, export_format):
         """Return True if `export_format` is one of the supported export formats."""
-        return export_format is not None and export_format in TableExport.FORMATS.keys()
+        pass
 
     def content_type(self):
         """Return the content type for the current export format."""
-        return self.FORMATS[self.format]
+        pass
 
     def export(self):
         """Return the string/bytes for the current export format."""
-        return self.dataset.export(self.format)
+        pass
 
     def response(self, filename=None):
         """
@@ -91,9 +76,4 @@ class TableExport:
             filename (str): if not `None`, the filename is attached to the
                 `Content-Disposition` header of the response.
         """
-        response = HttpResponse(content_type=self.content_type())
-        if filename is not None:
-            response["Content-Disposition"] = f'attachment; filename="{filename}"'
-
-        response.write(self.export())
-        return response
+        pass

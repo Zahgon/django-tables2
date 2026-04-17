@@ -77,7 +77,7 @@ class ManyToManyColumn(Column):
 
     def filter(self, qs):
         """Call on the ManyRelatedManager to allow ordering, filtering or limiting on the set of related objects."""
-        return qs.all()
+        pass
 
     def render(self, value):
         items = []
@@ -92,5 +92,4 @@ class ManyToManyColumn(Column):
 
     @classmethod
     def from_field(cls, field, **kwargs):
-        if isinstance(field, models.ManyToManyField):
-            return cls(**kwargs)
+        pass

@@ -32,9 +32,8 @@ class EmailColumn(BaseLinkColumn):
     """
 
     def get_url(self, value):
-        return f"mailto:{value}"
+        pass
 
     @classmethod
     def from_field(cls, field, **kwargs):
-        if isinstance(field, models.EmailField):
-            return cls(**kwargs)
+        pass

@@ -31,17 +31,7 @@ def token_kwargs(bits, parser):
     - No legacy mode.
     - Both keys and values are compiled as a filter
     """
-    if not bits:
-        return {}
-    kwargs = OrderedDict()
-    while bits:
-        match = kwarg_re.match(bits[0])
-        if not match or not match.group(1):
-            return kwargs
-        key, value = match.groups()
-        del bits[:1]
-        kwargs[parser.compile_filter(key)] = parser.compile_filter(value)
-    return kwargs
+    pass
 
 
 class QuerystringReplaceNode(Node):
@@ -93,27 +83,7 @@ def querystring_replace(parser, token):
         {% querystring_replace "name"="Ayers" without "gender" %}
         ?name=Ayers
     """
-    bits = token.split_contents()
-    tag = bits.pop(0)
-    updates = token_kwargs(bits, parser)
-
-    asvar_key = None
-    for key in updates:
-        if str(key) == "as":
-            asvar_key = key
-
-    if asvar_key is not None:
-        asvar = updates[asvar_key]
-        del updates[asvar_key]
-    else:
-        asvar = None
-
-    # ``bits`` should now be empty of a=b pairs, it should either be empty, or
-    # have ``without`` arguments.
-    if bits and bits.pop(0) != "without":
-        raise TemplateSyntaxError(f"Malformed arguments to '{tag}'")
-    removals = [parser.compile_filter(bit) for bit in bits]
-    return QuerystringReplaceNode(updates, removals, asvar=asvar)
+    pass
 
 
 class RenderTableNode(Node):
@@ -199,13 +169,7 @@ def render_table(parser, token):
     request. This allows pagination URLs to be created without clobbering the
     existing querystring.
     """
-    bits = token.split_contents()
-    bits.pop(0)
-
-    table = parser.compile_filter(bits.pop(0))
-    template = parser.compile_filter(bits.pop(0)) if bits else None
-
-    return RenderTableNode(table, template)
+    pass
 
 
 register.filter("localize", l10n_register.filters["localize"])
@@ -225,14 +189,7 @@ def export_url(context, export_format, export_trigger_param=None):
 
         ?q=blue&amp;_export=csv
     """
-    if export_trigger_param is None and "view" in context:
-        export_trigger_param = getattr(context["view"], "export_trigger_param", None)
-
-    export_trigger_param = export_trigger_param or "_export"
-
-    return QuerystringReplaceNode(
-        updates={export_trigger_param: export_format}, removals=[]
-    ).render(context)
+    pass
 
 
 @register.filter
@@ -274,9 +231,4 @@ def table_page_range(page, paginator):
 
 @register.simple_tag
 def render_attrs(attrs, **kwargs):
-    ret = AttributeDict(kwargs)
-
-    if attrs is not None:
-        ret.update(attrs)
-
-    return ret.as_html()
+    pass

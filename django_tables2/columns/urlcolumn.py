@@ -25,9 +25,8 @@ class URLColumn(BaseLinkColumn):
     """
 
     def get_url(self, value):
-        return value
+        pass
 
     @classmethod
     def from_field(cls, field, **kwargs):
-        if isinstance(field, models.URLField):
-            return cls(**kwargs)
+        pass

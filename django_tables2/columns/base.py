@@ -36,23 +36,7 @@ class Library:
         Returns:
             `.Column` object or `None`
         """
-        if field is None:
-            return self.columns[0](**kwargs)
-
-        # Iterate in reverse order as columns are registered in order
-        # of least to most specialised (i.e. Column is registered
-        # first). This also allows user-registered columns to be
-        # favoured.
-        for candidate in reversed(self.columns):
-            if hasattr(field, "get_related_field"):
-                verbose_name = field.get_related_field().verbose_name
-            else:
-                verbose_name = getattr(field, "verbose_name", field.name)
-            kwargs["verbose_name"] = capfirst(verbose_name)
-            column = candidate.from_field(field, **kwargs)
-            if column is None:
-                continue
-            return column
+        pass
 
 
 # The library is a mechanism for announcing what columns are available. Its
@@ -96,56 +80,14 @@ class LinkTransform:
         self.reverse_args = reverse_args or {}
 
     def compose_url(self, **kwargs):
-        if self.url and callable(self.url):
-            return call_with_appropriate(self.url, kwargs)
-
-        bound_column = kwargs.get("bound_column", None)
-        record = kwargs["record"]
-
-        if self.reverse_args.get("viewname", None) is not None:
-            return self.call_reverse(record=record)
-
-        if bound_column is None and self.accessor is None:
-            accessor = Accessor("")
-        else:
-            accessor = Accessor(self.accessor if self.accessor is not None else bound_column.name)
-        context = accessor.resolve(record)
-        if not hasattr(context, "get_absolute_url"):
-            if hasattr(record, "get_absolute_url"):
-                context = record
-            else:
-                raise TypeError(
-                    f"for linkify=True, '{context}' must have a method get_absolute_url"
-                )
-        return context.get_absolute_url()
+        pass
 
     def call_reverse(self, record):
         """Prepare the arguments to reverse() for this record and calls reverse()."""
-
-        def resolve_if_accessor(val):
-            return val.resolve(record) if isinstance(val, Accessor) else val
-
-        params = self.reverse_args.copy()
-
-        params["viewname"] = resolve_if_accessor(params["viewname"])
-        if params.get("urlconf", None):
-            params["urlconf"] = resolve_if_accessor(params["urlconf"])
-        if params.get("args", None):
-            params["args"] = [resolve_if_accessor(a) for a in params["args"]]
-        if params.get("kwargs", None):
-            params["kwargs"] = {
-                key: resolve_if_accessor(val) for key, val in params["kwargs"].items()
-            }
-        if params.get("current_app", None):
-            params["current_app"] = resolve_if_accessor(params["current_app"])
-
-        return reverse(**params)
+        pass
 
     def get_attrs(self, **kwargs):
-        attrs = AttributeDict(computed_values(self.attrs or {}, kwargs=kwargs))
-        attrs["href"] = self.compose_url(**kwargs)
-
-        return attrs
+        pass
 
     def __call__(self, content, **kwargs):
         attrs = self.get_attrs(**kwargs)
@@ -314,7 +256,7 @@ class Column:
 
     @property
     def default(self):
-        return self._default() if callable(self._default) else self._default
+        pass
 
     @property
     def header(self):
@@ -334,22 +276,11 @@ class Column:
             accessing that first) when this property doesn't return something
             useful.
         """
-        return self.verbose_name
+        pass
 
     def footer(self, bound_column, table):
         """Return the content of the footer, if specified."""
-        footer_kwargs = {"column": self, "bound_column": bound_column, "table": table}
-
-        if self._footer is not None:
-            if callable(self._footer):
-                return call_with_appropriate(self._footer, footer_kwargs)
-            else:
-                return self._footer
-
-        if hasattr(self, "render_footer"):
-            return call_with_appropriate(self.render_footer, footer_kwargs)
-
-        return ""
+        pass
 
     def render(self, value):
         """
@@ -379,9 +310,7 @@ class Column:
 
         See `LinkColumn` for an example.
         """
-        value = call_with_appropriate(self.render, kwargs)
-
-        return value
+        pass
 
     def order(self, queryset, is_descending):
         """
@@ -414,10 +343,7 @@ class Column:
         If the column is specialized, it should return an instance of itself
         that is configured appropriately for the field.
         """
-        # Since this method is inherited by every subclass, only provide a
-        # column if this class was asked directly.
-        if cls is Column:
-            return cls(**kwargs)
+        pass
 
 
 class BoundColumn:
@@ -533,30 +459,20 @@ class BoundColumn:
     @property
     def default(self):
         """Return the default value for this column."""
-        value = self.column.default
-        if value is None:
-            value = self._table.default
-        return value
+        pass
 
     @property
     def header(self):
         """The contents of the header cell for this column."""
-        # favour Column.header
-        column_header = self.column.header
-        if column_header:
-            return column_header
-        # fall back to automatic best guess
-        return self.verbose_name
+        pass
 
     @property
     def footer(self):
         """The contents of the footer cell for this column."""
-        return call_with_appropriate(
-            self.column.footer, {"bound_column": self, "table": self._table}
-        )
+        pass
 
     def has_footer(self):
-        return self.column._footer is not None or hasattr(self.column, "render_footer")
+        pass
 
     @property
     def order_by(self):
@@ -622,22 +538,16 @@ class BoundColumn:
             {% endif %}
 
         """
-        order_by = OrderBy((self._table.order_by or {}).get(self.name, self.name))
-        order_by.next = order_by.opposite if self.is_ordered else order_by
-        if self.column.initial_sort_descending and not self.is_ordered:
-            order_by.next = order_by.opposite
-        return order_by
+        pass
 
     @property
     def is_ordered(self):
-        return self.name in (self._table.order_by or ())
+        pass
 
     @property
     def orderable(self):
         """Return whether this column supports ordering."""
-        if self.column.orderable is not None:
-            return self.column.orderable
-        return self._table.orderable
+        pass
 
     @property
     def verbose_name(self):
@@ -660,34 +570,12 @@ class BoundColumn:
         relationship turns from ORM relationships to object attributes [e.g.
         person.upper should stop at person]).
         """
-        # Favor an explicit defined verbose_name
-        if self.column.verbose_name is not None:
-            return self.column.verbose_name
-
-        # This is our reasonable fall back, should the next section not result
-        # in anything useful.
-        name = self.name.replace("_", " ")
-
-        # Try to use a model field's verbose_name
-        model = self._table.data.model
-        if model:
-            field = Accessor(self.accessor).get_field(model)
-            if field:
-                if hasattr(field, "field"):
-                    name = field.field.verbose_name
-                else:
-                    name = getattr(field, "verbose_name", field.name)
-
-            # If verbose_name was mark_safe()'d, return intact to keep safety
-            if isinstance(name, SafeData):
-                return name
-
-        return capfirst(name)
+        pass
 
     @property
     def visible(self):
         """Return whether this column is visible."""
-        return self.column.visible
+        pass
 
     @property
     def localize(self):
@@ -729,17 +617,17 @@ class BoundColumns:
             bound_column.order = getattr(table, "order_" + name, column.order)
 
     def iternames(self):
-        return (name for name, column in self.iteritems())
+        pass
 
     def names(self):
-        return list(self.iternames())
+        pass
 
     def iterall(self):
         """Return an iterator that exposes all `.BoundColumn` objects, regardless of visibility or sortability."""
-        return (column for name, column in self.iteritems())
+        pass
 
     def all(self):
-        return list(self.iterall())
+        pass
 
     def iteritems(self):
         """
@@ -765,7 +653,7 @@ class BoundColumns:
         conjunction with e.g. ``{{ forloop.last }}`` (the last column might not
         be the actual last that is rendered).
         """
-        return (x for x in self.iterall() if x.orderable)
+        pass
 
     def itervisible(self):
         """
@@ -773,7 +661,7 @@ class BoundColumns:
 
         This is geared towards table rendering.
         """
-        return (x for x in self.iterall() if x.visible)
+        pass
 
     def hide(self, name):
         """

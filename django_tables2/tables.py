@@ -155,30 +155,7 @@ class TableOptions:
 
     def _check_types(self, options, class_name):
         """Check class Meta attributes to prevent common mistakes."""
-        if options is None:
-            return
-
-        checks = {
-            (bool,): ["show_header", "show_footer", "orderable"],
-            (int,): ["per_page"],
-            (tuple, list, set): ["fields", "sequence", "exclude", "localize", "unlocalize"],
-            (tuple, list, set, dict): ["linkify"],
-            str: ["template_name", "prefix", "order_by_field", "page_field", "per_page_field"],
-            (dict,): ["attrs", "row_attrs", "pinned_row_attrs"],
-            (tuple, list, str): ["order_by"],
-            (type(models.Model),): ["model"],
-        }
-
-        for types, keys in checks.items():
-            for key in keys:
-                value = getattr(options, key, None)
-                if value is not None and not isinstance(value, types):
-                    expression = f"{class_name}.{key} = {value.__repr__()}"
-
-                    allowed = ", ".join([t.__name__ for t in types])
-                    raise TypeError(
-                        f"{expression} (type {type(value).__name__}), but type must be one of ({allowed})"
-                    )
+        pass
 
 
 class Table(metaclass=DeclarativeColumnsMetaclass):
@@ -389,7 +366,7 @@ class Table(metaclass=DeclarativeColumnsMetaclass):
             ...             "column_c" : "other value",
             ...         }]
         """
-        return None
+        pass
 
     def get_bottom_pinned_data(self):
         """
@@ -413,7 +390,7 @@ class Table(metaclass=DeclarativeColumnsMetaclass):
             ...             "column_c" : "other value",
             ...         }]
         """
-        return None
+        pass
 
     def before_render(self, request):
         """
@@ -477,33 +454,19 @@ class Table(metaclass=DeclarativeColumnsMetaclass):
 
         Note that any invisible columns will be part of the row iterator.
         """
-        if exclude_columns is None:
-            exclude_columns = ()
-
-        columns = [
-            column
-            for column in self.columns.iterall()
-            if not (column.column.exclude_from_export or column.name in exclude_columns)
-        ]
-
-        yield [force_str(column.header, strings_only=True) for column in columns]
-
-        for row in self.rows:
-            yield [
-                force_str(row.get_cell_value(column.name), strings_only=True) for column in columns
-            ]
+        pass
 
     def has_footer(self):
         """Return True if any of the columns define a ``_footer`` attribute or a ``render_footer()`` method."""
-        return self.show_footer and any(column.has_footer() for column in self.columns)
+        pass
 
     @property
     def show_header(self):
-        return self._show_header if self._show_header is not None else self._meta.show_header
+        pass
 
     @show_header.setter
     def show_header(self, value):
-        self._show_header = value
+        pass
 
     @property
     def order_by(self):
@@ -533,21 +496,19 @@ class Table(metaclass=DeclarativeColumnsMetaclass):
 
     @property
     def order_by_field(self):
-        return (
-            self._order_by_field if self._order_by_field is not None else self._meta.order_by_field
-        )
+        pass
 
     @order_by_field.setter
     def order_by_field(self, value):
-        self._order_by_field = value
+        pass
 
     @property
     def page_field(self):
-        return self._page_field if self._page_field is not None else self._meta.page_field
+        pass
 
     @page_field.setter
     def page_field(self, value):
-        self._page_field = value
+        pass
 
     def paginate(self, paginator_class=Paginator, per_page=None, page=1, *args, **kwargs):
         """
@@ -573,73 +534,60 @@ class Table(metaclass=DeclarativeColumnsMetaclass):
 
     @property
     def per_page_field(self):
-        return (
-            self._per_page_field if self._per_page_field is not None else self._meta.per_page_field
-        )
+        pass
 
     @per_page_field.setter
     def per_page_field(self, value):
-        self._per_page_field = value
+        pass
 
     @property
     def prefix(self):
-        return self._prefix if self._prefix is not None else self._meta.prefix
+        pass
 
     @prefix.setter
     def prefix(self, value):
-        self._prefix = value
+        pass
 
     @property
     def prefixed_order_by_field(self):
-        return f"{self.prefix}{self.order_by_field}"
+        pass
 
     @property
     def prefixed_page_field(self):
-        return f"{self.prefix}{self.page_field}"
+        pass
 
     @property
     def prefixed_per_page_field(self):
-        return f"{self.prefix}{self.per_page_field}"
+        pass
 
     @property
     def sequence(self):
-        return self._sequence
+        pass
 
     @sequence.setter
     def sequence(self, value):
-        if value:
-            value = Sequence(value)
-            value.expand(self.base_columns.keys())
-        self._sequence = value
+        pass
 
     @property
     def orderable(self):
-        if self._orderable is not None:
-            return self._orderable
-        else:
-            return self._meta.orderable
+        pass
 
     @orderable.setter
     def orderable(self, value):
-        self._orderable = value
+        pass
 
     @property
     def template_name(self):
-        if self._template is not None:
-            return self._template
-        else:
-            return self._meta.template_name
+        pass
 
     @template_name.setter
     def template_name(self, value):
-        self._template = value
+        pass
 
     @property
     def paginated_rows(self):
         """Return the rows for the current page if the table is paginated, else all rows."""
-        if hasattr(self, "page"):
-            return self.page.object_list
-        return self.rows
+        pass
 
     def get_column_class_names(self, classes_set, bound_column):
         """

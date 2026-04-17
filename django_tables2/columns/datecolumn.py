@@ -27,10 +27,7 @@ class DateColumn(TemplateColumn):
 
     @classmethod
     def from_field(cls, field, **kwargs):
-        if isinstance(field, models.DateField):
-            return cls(**kwargs)
+        pass
 
     def value(self, value, **kwargs):
-        if isinstance(value, date):
-            return value.isoformat()
-        return super().value(value=value, **kwargs)
+        pass

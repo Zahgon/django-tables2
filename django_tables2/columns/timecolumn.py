@@ -24,10 +24,7 @@ class TimeColumn(TemplateColumn):
 
     @classmethod
     def from_field(cls, field, **kwargs):
-        if isinstance(field, models.TimeField):
-            return cls(**kwargs)
+        pass
 
     def value(self, value, **kwargs):
-        if isinstance(value, time):
-            return value.isoformat()
-        return super().value(value=value, **kwargs)
+        pass

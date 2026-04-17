@@ -43,28 +43,7 @@ class Sequence(list):
         Raises:
             `ValueError` if the sequence is invalid for the columns.
         """
-        ellipses = self.count("...")
-        if ellipses > 1:
-            raise ValueError("'...' must be used at most once in a sequence.")
-        elif ellipses == 0:
-            self.append("...")
-
-        # everything looks good, let's expand the "..." item
-        columns = list(columns)  # take a copy and exhaust the generator
-        head = []
-        tail = []
-        target = head  # start by adding things to the head
-        for name in self:
-            if name == "...":
-                # now we'll start adding elements to the tail
-                target = tail
-                continue
-            target.append(name)
-            if name in columns:
-                columns.pop(columns.index(name))
-        self[:] = chain(head, columns, tail)
-
-        return self
+        pass
 
 
 class OrderBy(str):
@@ -98,7 +77,7 @@ class OrderBy(str):
         Example: ``age`` is the bare form of ``-age``
 
         """
-        return OrderBy(self[1:]) if self[:1] == "-" else self
+        pass
 
     @property
     def opposite(self):
@@ -115,17 +94,17 @@ class OrderBy(str):
             '-name'
 
         """
-        return OrderBy(self[1:]) if self.is_descending else OrderBy("-" + self)
+        pass
 
     @property
     def is_descending(self):
         """Return `True` if this object induces *descending* ordering."""
-        return self.startswith("-")
+        pass
 
     @property
     def is_ascending(self):
         """Return `True` if this object induces *ascending* ordering."""
-        return not self.is_descending
+        pass
 
     def for_queryset(self):
         """Return the current instance usable in Django QuerySet's order_by arguments."""
@@ -215,51 +194,7 @@ class OrderByTuple(tuple):
 
     @property
     def key(self):
-        accessors = []
-        reversing = []
-        for order_by in self:
-            accessors.append(Accessor(order_by.bare))
-            reversing.append(order_by.is_descending)
-
-        @total_ordering
-        class Comparator:
-            def __init__(self, obj):
-                self.obj = obj
-
-            def __eq__(self, other):
-                for accessor in accessors:
-                    a = accessor.resolve(self.obj, quiet=True)
-                    b = accessor.resolve(other.obj, quiet=True)
-                    if not a == b:
-                        return False
-                return True
-
-            def __lt__(self, other):
-                for accessor, reverse in zip(accessors, reversing):
-                    a = accessor.resolve(self.obj, quiet=True)
-                    b = accessor.resolve(other.obj, quiet=True)
-                    if a == b:
-                        continue
-                    if reverse:
-                        a, b = b, a
-                    # The rest of this should be refactored out into a util
-                    # function 'compare' that handles different types.
-                    try:
-                        return a < b
-                    except TypeError:
-                        # If the truth values differ, it's a good way to
-                        # determine ordering.
-                        if bool(a) is not bool(b):
-                            return bool(a) < bool(b)
-                        # Handle comparing different types, by falling back to
-                        # the string and id of the type. This at least groups
-                        # different types together.
-                        a_type = type(a)
-                        b_type = type(b)
-                        return (repr(a_type), id(a_type)) < (repr(b_type), id(b_type))
-                return False
-
-        return Comparator
+        pass
 
     def get(self, key, fallback):
         """Identical to `__getitem__`, but supports fallback value."""
@@ -277,7 +212,7 @@ class OrderByTuple(tuple):
             >>> order_by.opposite
             ('-name', 'age')
         """
-        return type(self)(o.opposite for o in self)
+        pass
 
 
 class Accessor(str):
@@ -408,9 +343,7 @@ class Accessor(str):
 
     @property
     def bits(self):
-        if self == "":
-            return ()
-        return self.split(self.SEPARATOR)
+        pass
 
     def get_field(self, model):
         """Return the django model field for model in context, following relations."""

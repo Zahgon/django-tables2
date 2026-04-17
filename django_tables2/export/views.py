@@ -36,24 +36,13 @@ class ExportMixin:
     export_formats = (TableExport.CSV,)
 
     def get_export_filename(self, export_format):
-        return f"{self.export_name}.{export_format}"
+        pass
 
     def get_dataset_kwargs(self):
-        return self.dataset_kwargs
+        pass
 
     def create_export(self, export_format):
-        exporter = self.export_class(
-            export_format=export_format,
-            table=self.get_table(**self.get_table_kwargs()),
-            exclude_columns=self.exclude_columns,
-            dataset_kwargs=self.get_dataset_kwargs(),
-        )
-
-        return exporter.response(filename=self.get_export_filename(export_format))
+        pass
 
     def render_to_response(self, context, **kwargs):
-        export_format = self.request.GET.get(self.export_trigger_param, None)
-        if self.export_class.is_valid_format(export_format):
-            return self.create_export(export_format)
-
-        return super().render_to_response(context, **kwargs)
+        pass
